@@ -11,7 +11,7 @@ Error generating stack: `+e.message+`
 READ THIS BEFORE EDITING
 
 Please make your changes in the editor instead of modifying the raw text.
-It automatically handles formating, sorting, grouping by first letter, and help prevent errors.
+It automatically handles formatting, sorting, grouping by first letter, and help prevent errors.
 
 Editor: https://rmhaiderali.github.io/logo-gallery-editor
 -->`,g=e=>e.map(e=>e.replace(/"/g,``).trim()).filter(Boolean),_=e=>{let t=e.map(e=>`"`+e+`"`);return t.length<=2?t.join(` and `):t.slice(0,-1).join(`, `)+`, and `+t[t.length-1]},v=e=>{let t=g(e.terms);return e.image.trim()+`|Icon for `+_(t)},y=e=>g(e.terms)[0]??e.image;function b(e,t,n,r=!0){let i=[...e.filter(e=>e.image.trim())].sort((e,t)=>y(e).localeCompare(y(t)));if(!r)return[h,t,...i.map(v),n].join(`
