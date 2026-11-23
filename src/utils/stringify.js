@@ -1,10 +1,15 @@
 const cleanTerms = (terms) =>
   terms.map((t) => t.replace(/"/g, "").trim()).filter(Boolean)
 
+const joinTerms = (terms) => {
+  const quoted = terms.map((q) => '"' + q + '"')
+  if (quoted.length <= 2) return quoted.join(" and ")
+  return quoted.slice(0, -1).join(", ") + ", and " + quoted[quoted.length - 1]
+}
+
 const logoLine = (logo) => {
   const terms = cleanTerms(logo.terms)
-  const caption = terms.map((q) => '"' + q + '"').join(" and ")
-  return logo.image.trim() + "|Icon for " + caption
+  return logo.image.trim() + "|Icon for " + joinTerms(terms)
 }
 
 const sortKey = (logo) => cleanTerms(logo.terms)[0] ?? logo.image
