@@ -142,9 +142,11 @@ function App() {
       <a
         target="_blank"
         rel="noopener noreferrer"
+        style={{ textDecoration: "none", color: "inherit" }}
         href="https://github.com/rmhaiderali/logo-gallery-editor"
-      ></a>
-      <h1>Logo Gallery Editor</h1>
+      >
+        <h1>Logo Gallery Editor</h1>
+      </a>
 
       <section className="panel">
         <h2>1. Import</h2>

@@ -1,6 +1,18 @@
+const EXPORT_NOTE =
+  [
+    "<!--",
+    "Please make your changes in the editor instead of modifying the raw text.",
+    "It automatically handles formating, sorting, grouping by first letter, and help prevent errors.",
+    "https://rmhaiderali.github.io/logo-gallery-editor",
+    "-->",
+  ].join("\n") + "\n\n"
+
 const cleanTerms = (terms) =>
   terms.map((t) => t.replace(/"/g, "").trim()).filter(Boolean)
 
+// "a"
+// "a" and "b"
+// "a", "b", and "c"
 const joinTerms = (terms) => {
   const quoted = terms.map((q) => '"' + q + '"')
   if (quoted.length <= 2) return quoted.join(" and ")
@@ -26,7 +38,7 @@ export function stringify(logos, tagStart, tagEnd, grouped = true) {
   const sorted = [...valid].sort((a, b) => sortKey(a).localeCompare(sortKey(b)))
 
   if (!grouped) {
-    return [tagStart, ...sorted.map(logoLine), tagEnd].join("\n")
+    return EXPORT_NOTE + [tagStart, ...sorted.map(logoLine), tagEnd].join("\n")
   }
 
   const groups = new Map()
@@ -54,5 +66,5 @@ export function stringify(logos, tagStart, tagEnd, grouped = true) {
     for (const logo of items) lines.push(logoLine(logo))
     lines.push(tagEnd)
   }
-  return lines.join("\n")
+  return EXPORT_NOTE + lines.join("\n")
 }
