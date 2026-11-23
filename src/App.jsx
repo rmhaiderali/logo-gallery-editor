@@ -153,7 +153,7 @@ function App() {
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Paste copied text here"
+          placeholder="Paste copied tabber text here"
           rows={6}
         />
         <div className="actions">
