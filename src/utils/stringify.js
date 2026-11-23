@@ -1,38 +1,53 @@
-function stringify(text, tagStart, tagEnd) {
-  const logos = JSON.parse(text)
+const cleanTerms = (terms) =>
+  terms.map((t) => t.replace(/"/g, "").trim()).filter(Boolean)
 
-  const sortedLogos = logos.sort((a, b) => a[1][0].localeCompare(b[1][0]))
+const logoLine = (logo) => {
+  const terms = cleanTerms(logo.terms)
+  const caption = terms.map((q) => '"' + q + '"').join(" and ")
+  return logo.image.trim() + "|Icon for " + caption
+}
 
-  const groupedLogos = Object.groupBy(sortedLogos, (logo) => {
-    const firstChar = logo[1][0].charAt(0).toUpperCase()
-    if (firstChar.match(/[0-9]/)) return "Number"
-    return firstChar
-  })
+const sortKey = (logo) => cleanTerms(logo.terms)[0] ?? logo.image
 
-  const numberLogos = groupedLogos.Number
-  delete groupedLogos.Number
+/**
+ * Turn an array of { image, terms } into the HTML-like format.
+ * Logos are always sorted by first search term. With grouped=true they are
+ * also split into "|-|" / "X=" letter sections (Number first); otherwise a
+ * single gallery is produced.
+ */
+export function stringify(logos, tagStart, tagEnd, grouped = true) {
+  const valid = logos.filter((l) => l.image.trim())
 
-  const sortedGroups = Object.entries(groupedLogos).sort((a, b) =>
-    a[0].localeCompare(b[0]),
-  )
+  const sorted = [...valid].sort((a, b) => sortKey(a).localeCompare(sortKey(b)))
 
-  sortedGroups.unshift(["Number", numberLogos])
-
-  const lines = []
-
-  for (const [groupName, groupLogos] of sortedGroups) {
-    lines.push("|-|")
-    lines.push(groupName + "=")
-    lines.push(tagStart)
-    for (const [image, searchTerms] of groupLogos) {
-      lines.push(
-        image +
-          "|Icon for " +
-          searchTerms.map((q) => '"' + q + '"').join(" or "),
-      )
-    }
-    lines.push(tagEnd)
+  if (!grouped) {
+    return [tagStart, ...sorted.map(logoLine), tagEnd].join("\n")
   }
 
+  const groups = new Map()
+  for (const logo of sorted) {
+    const first = sortKey(logo).charAt(0).toUpperCase()
+    const name = /[0-9]/.test(first)
+      ? "Number"
+      : /\p{L}/u.test(first)
+        ? first
+        : "Other"
+    if (!groups.has(name)) groups.set(name, [])
+    groups.get(name).push(logo)
+  }
+
+  const rank = (name) => (name === "Number" ? 0 : name === "Other" ? 2 : 1)
+  const ordered = [...groups.entries()].sort(
+    (a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]),
+  )
+
+  const lines = []
+  for (const [name, items] of ordered) {
+    lines.push("|-|")
+    lines.push(name + "=")
+    lines.push(tagStart)
+    for (const logo of items) lines.push(logoLine(logo))
+    lines.push(tagEnd)
+  }
   return lines.join("\n")
 }
