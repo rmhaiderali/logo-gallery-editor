@@ -3,7 +3,7 @@ export const EXPORT_NOTE = [
   "READ THIS BEFORE EDITING",
   "",
   "Please make your changes in the editor instead of modifying the raw text.",
-  "It automatically handles formating, sorting, grouping by first letter, and help prevent errors.",
+  "It automatically handles formatting, sorting, grouping by first letter, and help prevent errors.",
   "",
   "Editor: https://rmhaiderali.github.io/logo-gallery-editor",
   "-->",
