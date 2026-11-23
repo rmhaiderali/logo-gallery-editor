@@ -1,11 +1,13 @@
-const EXPORT_NOTE =
-  [
-    "<!--",
-    "Please make your changes in the editor instead of modifying the raw text.",
-    "It automatically handles formating, sorting, grouping by first letter, and help prevent errors.",
-    "https://rmhaiderali.github.io/logo-gallery-editor",
-    "-->",
-  ].join("\n") + "\n\n"
+export const EXPORT_NOTE = [
+  "<!--",
+  "READ THIS BEFORE EDITING",
+  "",
+  "Please make your changes in the editor instead of modifying the raw text.",
+  "It automatically handles formating, sorting, grouping by first letter, and help prevent errors.",
+  "",
+  "Editor: https://rmhaiderali.github.io/logo-gallery-editor",
+  "-->",
+].join("\n")
 
 const cleanTerms = (terms) =>
   terms.map((t) => t.replace(/"/g, "").trim()).filter(Boolean)
@@ -38,7 +40,7 @@ export function stringify(logos, tagStart, tagEnd, grouped = true) {
   const sorted = [...valid].sort((a, b) => sortKey(a).localeCompare(sortKey(b)))
 
   if (!grouped) {
-    return EXPORT_NOTE + [tagStart, ...sorted.map(logoLine), tagEnd].join("\n")
+    return [EXPORT_NOTE, tagStart, ...sorted.map(logoLine), tagEnd].join("\n")
   }
 
   const groups = new Map()
@@ -59,12 +61,13 @@ export function stringify(logos, tagStart, tagEnd, grouped = true) {
   )
 
   const lines = []
-  for (const [name, items] of ordered) {
+  ordered.forEach(([name, items], i) => {
     lines.push("|-|")
     lines.push(name + "=")
+    if (i === 0) lines.push(EXPORT_NOTE)
     lines.push(tagStart)
     for (const logo of items) lines.push(logoLine(logo))
     lines.push(tagEnd)
-  }
-  return EXPORT_NOTE + lines.join("\n")
+  })
+  return lines.join("\n")
 }
